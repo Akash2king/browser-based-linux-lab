@@ -26,7 +26,7 @@ A web-based temporary Linux lab environment that spins up isolated Linux desktop
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Akash2king/browser-based-linux-lab.git
 cd docker-kasm-terraform
 ```
 
