@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux Practice Lab - Interactive Learning Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #00C896;
+      --primary-dark: #00a67d;
+      --danger: #ff3e3e;
+      --warning: #ffa500;
+      --bg-dark: #0C1B2A;
+      --bg-darker: #08131E;
+      --card-bg: #152438;
+      --border: #1F3147;
+      --text-primary: #FFFFFF;
+      --text-secondary: #8BA1B7;
+    }
+
+    body {
+      background: var(--bg-dark);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-darker);
+      padding: 1.5rem 2rem;
+      border-bottom: 2px solid var(--border);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .logo-icon {
+      background: var(--primary);
+      color: var(--bg-darker);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-weight: 900;
+    }
+
+    .status-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Lab Control */
+    .lab-control {
+      grid-column: 1 / -1;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--primary);
+      color: var(--bg-darker);
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 200, 150, 0.4);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--primary);
+      color: var(--bg-darker);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: #ff4444;
+      border: 2px solid #ff4444;
+      padding: 0.75rem 2rem;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #ff4444;
+      color: #fff;
+    }
+
+    .btn-danger:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Status Info */
+    .status-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .status-item {
+      background: var(--bg-darker);
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .status-label {
+      color: var(--text-secondary);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+
+    .status-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .timer-display {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .badge-idle {
+      background: #2A3F54;
+      color: var(--text-secondary);
+    }
+
+    .badge-initializing {
+      background: #1E3A5F;
+      color: #4DA3FF;
+    }
+
+    .badge-applying {
+      background: #3A2F1E;
+      color: #FFA500;
+    }
+
+    .badge-running {
+      background: rgba(0, 200, 150, 0.2);
+      color: var(--primary);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .badge-destroying {
+      background: #4A1E1E;
+      color: #FF6B6B;
+    }
+
+    .badge-completed {
+      background: rgba(0, 200, 150, 0.2);
+      color: var(--primary);
+    }
+
+    .badge-failed {
+      background: #4A1E1E;
+      color: var(--danger);
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.6;
+      }
+    }
+
+    /* Loader */
+    .loader {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .loader.active {
+      display: block;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto 1rem;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loader-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* VM Access */
+    .vm-access {
+      background: var(--bg-darker);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 2px solid var(--primary);
+      margin-top: 1rem;
+    }
+
+    .vm-access strong {
+      display: block;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .vm-link {
+      display: inline-block;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 0.75rem 1.5rem;
+      background: rgba(0, 200, 150, 0.1);
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+
+    .vm-link:hover {
+      background: var(--primary);
+      color: var(--bg-darker);
+    }
+
+    /* Credentials */
+    .credentials {
+      background: var(--bg-darker);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--warning);
+      margin-top: 1rem;
+    }
+
+    .credentials strong {
+      display: block;
+      margin-bottom: 1rem;
+      color: var(--warning);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .cred-item {
+      margin-bottom: 1rem;
+    }
+
+    .cred-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .cred-label {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 12px;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .password-box {
+      display: flex;
+      gap: 10px;
+    }
+
+    .password-box code {
+      flex: 1;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      padding: 1rem;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      border: 1px solid var(--border);
+    }
+
+    .copy-btn {
+      background: var(--warning);
+      color: var(--bg-darker);
+      padding: 1rem 1.5rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 165, 0, 0.4);
+    }
+
+    /* Terminal */
+    .terminal-container {
+      background: #000000;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      height: 500px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      background: #1E1E1E;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #2A2A2A;
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot-red {
+      background: #FF5F56;
+    }
+
+    .dot-yellow {
+      background: #FFBD2E;
+    }
+
+    .dot-green {
+      background: #27C93F;
+    }
+
+    .terminal-title {
+      margin-left: 1rem;
+      font-size: 13px;
+      color: #8A8A8A;
+    }
+
+    .terminal-body {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .terminal-output {
+      color: #00FF00;
+      margin-bottom: 1rem;
+    }
+
+    .terminal-prompt {
+      color: #00C896;
+    }
+
+    .terminal-command {
+      color: #FFFFFF;
+    }
+
+    /* Tasks List */
+    .task-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .task-item {
+      background: var(--bg-darker);
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--border);
+      transition: all 0.3s;
+    }
+
+    .task-item:hover {
+      border-left-color: var(--primary);
+    }
+
+    .task-number {
+      display: inline-block;
+      background: var(--primary);
+      color: var(--bg-darker);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-right: 0.75rem;
+    }
+
+    .task-text {
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+
+      .control-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .container {
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">⚡</div>
+        <span>Linux Practice Lab</span>
+      </div>
+      <div class="status-header">
+        <span class="status-badge badge-idle" id="status-badge">IDLE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Lab Control -->
+    <div class="card lab-control">
+      <div class="card-header">
+        <div class="card-title">
+          <span>🎯</span>
+          <span>Lab Environment</span>
+        </div>
+      </div>
+
+      <div class="control-grid">
+        <div>
+          <button class="btn-primary" id="start-btn" onclick="startLab()">
+            ⚡ Start Lab Environment
+          </button>
+          <button class="btn-secondary" id="stop-btn" onclick="stopLab()" style="display:none; margin-top:1rem;">
+            ⏹ Stop Lab Environment
+          </button>
+          <button class="btn-danger" id="cleanup-btn" onclick="forceCleanup()" style="display:none; margin-top:1rem;">
+            🔧 Force Cleanup
+          </button>
+
+          <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <div class="loader-text" id="loader-text">Provisioning infrastructure...</div>
+          </div>
+
+          <div id="access-section"></div>
+          <div id="creds-section"></div>
+        </div>
+
+        <div class="status-grid">
+          <div class="status-item">
+            <div class="status-label">Time Remaining</div>
+            <div class="status-value">
+              <div class="timer-display" id="timer">--:--</div>
+            </div>
+          </div>
+
+          <div class="status-item">
+            <div class="status-label">Session Status</div>
+            <div class="status-value" id="session-status">Not Started</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learning Tasks -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>📋</span>
+          <span>Learning Objectives</span>
+        </div>
+      </div>
+
+      <div class="task-list">
+        <div class="task-item">
+          <span class="task-number">1</span>
+          <span class="task-text">Navigate the Linux file system using basic commands</span>
+        </div>
+        <div class="task-item">
+          <span class="task-number">2</span>
+          <span class="task-text">Create and manage files and directories</span>
+        </div>
+        <div class="task-item">
+          <span class="task-number">3</span>
+          <span class="task-text">Use text editors (nano, vim) for file editing</span>
+        </div>
+        <div class="task-item">
+          <span class="task-number">4</span>
+          <span class="task-text">Understand file permissions and ownership</span>
+        </div>
+        <div class="task-item">
+          <span class="task-number">5</span>
+          <span class="task-text">Practice process management commands</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal Simulator -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>💻</span>
+          <span>Command Reference</span>
+        </div>
+      </div>
+
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <div class="terminal-dot dot-red"></div>
+          <div class="terminal-dot dot-yellow"></div>
+          <div class="terminal-dot dot-green"></div>
+          <div class="terminal-title">bash</div>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-output">
+            <span class="terminal-prompt">kasm-user@ubuntu:~$</span> <span class="terminal-command">ls -la</span>
+            List all files including hidden ones
+
+            <span class="terminal-prompt">kasm-user@ubuntu:~$</span> <span class="terminal-command">cd
+              /home/kasm-user</span>
+            Change to home directory
+
+            <span class="terminal-prompt">kasm-user@ubuntu:~$</span> <span class="terminal-command">pwd</span>
+            Print working directory
+
+            <span class="terminal-prompt">kasm-user@ubuntu:~$</span> <span class="terminal-command">mkdir
+              projects</span>
+            Create a new directory
+
+            <span class="terminal-prompt">kasm-user@ubuntu:~$</span> <span class="terminal-command">touch
+              file.txt</span>
+            Create a new file
+
+            <span class="terminal-prompt">kasm-user@ubuntu:~$</span> <span class="terminal-command">nano file.txt</span>
+            Edit file with nano editor
+
+            <span class="terminal-prompt">kasm-user@ubuntu:~$</span> <span class="terminal-command">chmod 755
+              script.sh</span>
+            Change file permissions
+
+            <span class="terminal-prompt">kasm-user@ubuntu:~$</span> <span class="terminal-command">ps aux</span>
+            List running processes
+
+            <span class="terminal-prompt">kasm-user@ubuntu:~$</span> <span class="terminal-command">top</span>
+            Monitor system resources
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const stateMessages = {
+      'IDLE': 'Ready to launch',
+      'STARTING': 'Initializing environment...',
+      'INITIALIZING': 'Setting up infrastructure...',
+      'APPLYING': 'Deploying resources...',
+      'RUNNING': 'Lab is active',
+      'DESTROYING': 'Terminating resources...',
+      'COMPLETED': 'Session ended',
+      'FAILED': 'Deployment failed',
+      'DESTROY_FAILED': 'Termination failed'
+    };
+
+    function startLab() {
+      document.getElementById('start-btn').disabled = true;
+      fetch("/start", { method: "POST" });
+    }
+
+    function stopLab() {
+      if (confirm('Are you sure you want to stop the lab environment?')) {
+        document.getElementById('stop-btn').disabled = true;
+        fetch("/stop", { method: "POST" })
+          .then(r => r.json())
+          .then(d => {
+            console.log('Stop initiated:', d);
+          })
+          .catch(err => console.error('Stop failed:', err));
+      }
+    }
+    function forceCleanup() {
+      if (confirm('⚠️ Force cleanup will attempt to destroy all resources.\n\nThis should only be used when normal termination fails.\n\nContinue?')) {
+        document.getElementById('cleanup-btn').disabled = true;
+        document.getElementById('cleanup-btn').textContent = '🔄 Cleaning...';
+
+        fetch("/force-cleanup", { method: "POST" })
+          .then(r => r.json())
+          .then(d => {
+            alert(d.message || 'Cleanup attempted');
+            document.getElementById('cleanup-btn').disabled = false;
+            document.getElementById('cleanup-btn').textContent = '🔧 Force Cleanup';
+          })
+          .catch(err => {
+            console.error('Cleanup failed:', err);
+            alert('Cleanup request failed. Check console.');
+            document.getElementById('cleanup-btn').disabled = false;
+            document.getElementById('cleanup-btn').textContent = '🔧 Force Cleanup';
+          });
+      }
+    }
+    function copyToClipboard(elementId, buttonId) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById(buttonId);
+        const original = btn.innerText;
+        btn.innerText = "✓ Copied";
+        setTimeout(() => btn.innerText = original, 2000);
+      });
+    }
+
+    function updateStatusBadge(state) {
+      const badge = document.getElementById('status-badge');
+      const statusText = document.getElementById('session-status');
+
+      badge.className = 'status-badge';
+      badge.textContent = state;
+
+      const stateClasses = {
+        'IDLE': 'badge-idle',
+        'STARTING': 'badge-initializing',
+        'INITIALIZING': 'badge-initializing',
+        'APPLYING': 'badge-applying',
+        'RUNNING': 'badge-running',
+        'DESTROYING': 'badge-destroying',
+        'COMPLETED': 'badge-completed',
+        'FAILED': 'badge-failed',
+        'DESTROY_FAILED': 'badge-failed'
+      };
+
+      badge.classList.add(stateClasses[state] || 'badge-idle');
+      statusText.textContent = stateMessages[state] || state;
+    }
+
+    function poll() {
+      fetch("/status")
+        .then(r => r.json())
+        .then(d => {
+          const state = d.state;
+          updateStatusBadge(state);
+
+          const loader = document.getElementById('loader');
+          const loaderText = document.getElementById('loader-text');
+          const startBtn = document.getElementById('start-btn');
+          const stopBtn = document.getElementById('stop-btn');
+          const cleanupBtn = document.getElementById('cleanup-btn');
+
+          // Loader management
+          if (['STARTING', 'INITIALIZING', 'APPLYING', 'DESTROYING'].includes(state)) {
+            loader.style.display = 'block';
+            loaderText.textContent = stateMessages[state];
+            startBtn.disabled = true;
+            stopBtn.style.display = 'none';
+            cleanupBtn.style.display = 'none';
+          } else {
+            loader.style.display = 'none';
+            if (state === 'IDLE' || state === 'COMPLETED') {
+              startBtn.disabled = false;
+              startBtn.textContent = state === 'COMPLETED' ? '⚡ Start New Session' : '⚡ Start Lab Environment';
+              stopBtn.style.display = 'none';
+              cleanupBtn.style.display = 'none';
+            }
+          }
+
+          // Show cleanup button on failure
+          if (state === 'DESTROY_FAILED' || state === 'FAILED') {
+            cleanupBtn.style.display = 'block';
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'none';
+          }
+
+          // Show stop button when running
+          if (state === 'RUNNING') {
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'block';
+            stopBtn.disabled = false;
+            cleanupBtn.style.display = 'none';
+          } else if (state === 'IDLE' || state === 'COMPLETED') {
+            startBtn.style.display = 'block';
+            stopBtn.style.display = 'none';
+          }
+
+          // Timer
+          const timerEl = document.getElementById('timer');
+          if (d.remaining_seconds !== null && state === 'RUNNING') {
+            const m = Math.floor(d.remaining_seconds / 60);
+            const s = d.remaining_seconds % 60;
+            timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+          } else {
+            timerEl.textContent = '--:--';
+          }
+
+          // VM Access
+          const accessSection = document.getElementById('access-section');
+          if (d.vm_url && state === 'RUNNING') {
+            accessSection.innerHTML =
+              '<div class="vm-access">' +
+              '  <strong>🖥️ Your Lab Environment is Ready</strong>' +
+              '  <a href="' + d.vm_url + '" target="_blank" class="vm-link">Launch Desktop Environment →</a>' +
+              '</div>';
+          } else {
+            accessSection.innerHTML = '';
+          }
+
+          // Credentials
+          const credsSection = document.getElementById('creds-section');
+          if (d.credentials && state === 'RUNNING') {
+            credsSection.innerHTML =
+              '<div class="credentials">' +
+              '  <strong>🔐 VNC Authentication</strong>' +
+              '  <div class="cred-item">' +
+              '    <div class="cred-label">Username</div>' +
+              '    <div class="password-box">' +
+              '      <code id="user-text">' + d.credentials.username + '</code>' +
+              '      <button class="copy-btn" onclick="copyToClipboard(\'user-text\', \'copy-user-btn\')">Copy</button>' +
+              '    </div>' +
+              '  </div>' +
+              '  <div class="cred-item">' +
+              '    <div class="cred-label">Password</div>' +
+              '    <div class="password-box">' +
+              '      <code id="pwd-text">' + d.credentials.password + '</code>' +
+              '      <button class="copy-btn" onclick="copyToClipboard(\'pwd-text\', \'copy-pwd-btn\')">Copy</button>' +
+              '    </div>' +
+              '  </div>' +
+              '</div>';
+          } else if (!['RUNNING', 'STARTING', 'INITIALIZING', 'APPLYING'].includes(state)) {
+            credsSection.innerHTML = '';
+          }
+        })
+        .catch(err => console.error('Status update failed:', err));
+    }
+
+    // Start polling
+    setInterval(poll, 1000);
+    poll();
+  </script>
+</body>
+
+</html>
